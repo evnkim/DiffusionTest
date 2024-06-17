@@ -83,6 +83,10 @@ class SimpleNet(nn.Module):
 
         ######## TODO ########
         # DO NOT change the code outside this part.
+        self.layers = [nn.Sequential(nn.TimeLinear(dim_in,dim_hids[0]), nn.ReLU())]
+        for i in range(0, len(dim_hids)):
+            self.layers.append(nn.Sequential(nn.TimeLinear(dim_hids[i], dim_hids[i+1]), nn.ReLU()))
+        self.layers.append(nn.TimeLinear(dim_hids[-1], dim_out))
 
         ######################
         
@@ -97,6 +101,8 @@ class SimpleNet(nn.Module):
         """
         ######## TODO ########
         # DO NOT change the code outside this part.
+        for layer in self.layers:
+            x = layer(x, t)
 
         ######################
         return x
