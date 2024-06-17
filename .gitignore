@@ -4,3 +4,5 @@ image_diffusion_todo/data/*
 !image_diffusion_todo/data/
 image_diffusion_todo/results/*
 !image_diffusion_todo/results/
+
+*.zip

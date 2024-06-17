@@ -75,11 +75,17 @@ def calculate_fid_given_paths(paths, img_size=256, batch_size=50):
     loaders = [get_eval_loader(path, img_size, batch_size) for path in paths]
 
     mu, cov = [], []
+    
+    # print(loaders)
+    
     for loader in loaders:
         actvs = []
         for x in tqdm(loader, total=len(loader)):
+            # print("x looks like....")
+            # print(x)
             actv = inception(x.to(device))
             actvs.append(actv)
+        # print(actvs)
         actvs = torch.cat(actvs, dim=0).cpu().detach().numpy()
         mu.append(np.mean(actvs, axis=0))
         cov.append(np.cov(actvs, rowvar=False))
