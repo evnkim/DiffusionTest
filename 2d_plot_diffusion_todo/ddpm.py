@@ -81,7 +81,7 @@ class DiffusionModule(nn.Module):
             xt (`torch.Tensor`): noisy samples
         """
         if noise is None:
-            noise = torch.randn_like(x0)
+            noise = torch.randn_like(x0).to(self.device)
 
         ######## TODO ########
         # DO NOT change the code outside this part.
@@ -116,7 +116,7 @@ class DiffusionModule(nn.Module):
         eps_theta = self.network(xt, t)
         alpha = extract(self.var_scheduler.alphas, t, xt)
         
-        gaus = torch.randn_like(xt)
+        gaus = torch.randn_like(xt).to(self.device)
 
         x_t_prev = 1/torch.sqrt(alpha) * (xt - eps_factor * eps_theta) + torch.sqrt(extract(self.var_scheduler.betas, t, xt)) * gaus
 
@@ -172,7 +172,7 @@ class DiffusionModule(nn.Module):
         if(eta != 0):
             sigma_t *= torch.sqrt(extract(self.var_scheduler.betas, t, xt))
 
-        x_t_prev = torch.sqrt(alpha_prod_t_prev / alpha_prod_t) * (xt - torch.sqrt(1-alpha_prod_t) * eps_theta) + torch.sqrt(1-alpha_prod_t_prev - sigma_t ** 2) * eps_theta + sigma_t * torch.randn_like(xt)
+        x_t_prev = torch.sqrt(alpha_prod_t_prev / alpha_prod_t) * (xt - torch.sqrt(1-alpha_prod_t) * eps_theta) + torch.sqrt(1-alpha_prod_t_prev - sigma_t ** 2) * eps_theta + sigma_t * torch.randn_like(xt).to(self.device)
 
         ######################
         return x_t_prev
@@ -199,7 +199,7 @@ class DiffusionModule(nn.Module):
             .copy()
             .astype(np.int64)
         )
-        timesteps = torch.from_numpy(timesteps)
+        timesteps = torch.from_numpy(timesteps).to(self.device)
         prev_timesteps = timesteps - step_ratio
 
         xt = torch.randn(shape).to(self.device)
@@ -231,7 +231,7 @@ class DiffusionModule(nn.Module):
             .long()
         )
         
-        eps = torch.randn_like(x0)
+        eps = torch.randn_like(x0).to(self.device)
         xt = self.q_sample(x0, t, eps)
         eps_theta = self.network(xt, t)
 
